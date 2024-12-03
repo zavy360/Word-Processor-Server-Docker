@@ -13,11 +13,6 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /source
 COPY ["src/ej2-documenteditor-server/ej2-documenteditor-server.csproj", "./ej2-documenteditor-server/ej2-documenteditor-server.csproj"]
 COPY ["src/ej2-documenteditor-server/NuGet.Config", "./ej2-documenteditor-server/"]
-
-RUN mkdir ./ej2-documenteditor-server/LocalPackages
-
-# CAN BE REMOVED WHEN WE NO LONGER NEED A LOCAL NUPKG FOR DOCIO
-COPY ["src/ej2-documenteditor-server/LocalPackages", "./LocalPackages"]
 RUN dotnet restore "./ej2-documenteditor-server/ej2-documenteditor-server.csproj"
 COPY . .
 WORKDIR "/source/src"
