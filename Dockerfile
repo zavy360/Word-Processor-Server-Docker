@@ -13,6 +13,9 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /source
 COPY ["src/ej2-documenteditor-server/ej2-documenteditor-server.csproj", "./ej2-documenteditor-server/ej2-documenteditor-server.csproj"]
 COPY ["src/ej2-documenteditor-server/NuGet.Config", "./ej2-documenteditor-server/"]
+RUN dotnet tool install --global dotnet-outdated-tool --version 4.6.0
+ENV PATH="$PATH:/root/.dotnet/tools"
+RUN dotnet outdated --upgrade --no-restore "./ej2-documenteditor-server/ej2-documenteditor-server.csproj"
 RUN dotnet restore "./ej2-documenteditor-server/ej2-documenteditor-server.csproj"
 COPY . .
 WORKDIR "/source/src"
