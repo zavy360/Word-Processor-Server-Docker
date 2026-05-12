@@ -113,12 +113,8 @@ namespace EJ2DocumentEditorServer.Controllers
               }
               else if (DotPrefix(param.export) == ".pdf")
               {
-                MemoryStream stream = new MemoryStream();
                 WDocument document = this.GetWDocument(param);
-                document.Save(stream, WFormatType.Docx);
-                string base64 = this.ExportPDF(document);
-                document.Dispose();
-                return base64;
+                return this.ExportPDF(document);
               }
               else
               {
@@ -249,6 +245,19 @@ namespace EJ2DocumentEditorServer.Controllers
 
         public WDocument GetWDocument(ConversionParameters param)
         {
+            if (DotPrefix(param.from) == ".sfdt")
+            {
+                byte[] sfdtBytes = DecodeIfBase64(param.content);
+                string sfdtContent = Encoding.UTF8.GetString(sfdtBytes);
+                WDocument sfdtDoc = WordDocument.Save(sfdtContent);
+                MemoryStream outStream = new MemoryStream();
+                sfdtDoc.Save(outStream, WFormatType.Docx);
+                sfdtDoc.Close();
+                WDocument wdoc = new WDocument(outStream, WFormatType.Docx);
+                wdoc.FontSettings.FallbackFonts.InitializeDefault();
+                return wdoc;
+            }
+
             byte[] byteArray = DecodeIfBase64(param.content);
             MemoryStream stream = new MemoryStream(byteArray);
 
