@@ -18,6 +18,7 @@ using Entity = Syncfusion.DocIO.DLS.Entity;
 using EntityType = Syncfusion.DocIO.DLS.EntityType;
 using Syncfusion.EJ2.SpellChecker;
 using Syncfusion.DocIORenderer;
+using Syncfusion.Office;
 using Syncfusion.Pdf;
 
 namespace EJ2DocumentEditorServer.Controllers
@@ -255,6 +256,9 @@ namespace EJ2DocumentEditorServer.Controllers
                 sfdtDoc.Close();
                 WDocument wdoc = new WDocument(outStream, WFormatType.Docx);
                 wdoc.FontSettings.FallbackFonts.InitializeDefault();
+                // InitializeDefault maps Korean to Windows-only fonts absent in the Linux container.
+                // Prepend Noto CJK (installed via fonts-noto-cjk) so glyphs aren't silently dropped.
+                wdoc.FontSettings.FallbackFonts.Add(ScriptType.Korean, "Noto Sans CJK KR, NanumGothic");
                 return wdoc;
             }
 
@@ -268,6 +272,7 @@ namespace EJ2DocumentEditorServer.Controllers
             WParagraphStyle defaultStyle = document.Styles.FindByName("Normal") as WParagraphStyle;
             ChangeFontName(document, "Calibri");
             document.FontSettings.FallbackFonts.InitializeDefault();
+            document.FontSettings.FallbackFonts.Add(ScriptType.Korean, "Malgun Gothic, Batang, Noto Sans CJK KR, NanumGothic");
             stream.Dispose();
 
             return document;
@@ -320,7 +325,6 @@ namespace EJ2DocumentEditorServer.Controllers
 
             // Instantiation of DocIORenderer for Word to PDF conversion.
             DocIORenderer render = new DocIORenderer();
-            //Sets true to embed TrueType fonts
             render.Settings.EmbedFonts = true;
             render.Settings.EmbedCompleteFonts = true;
 
