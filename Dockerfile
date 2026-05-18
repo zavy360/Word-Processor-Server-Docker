@@ -7,7 +7,7 @@ ENV SPELLCHECK_JSON_FILENAME=""
 ENV SPELLCHECK_CACHE_COUNT=""
 RUN echo "deb http://deb.debian.org/debian bullseye main contrib" > /etc/apt/sources.list \
     && apt-get update \
-    && apt-get install -y libfontconfig ttf-mscorefonts-installer
+    && apt-get install -y libfontconfig ttf-mscorefonts-installer fonts-noto-cjk
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /source
